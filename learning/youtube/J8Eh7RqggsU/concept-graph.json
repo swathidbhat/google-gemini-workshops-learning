@@ -1,498 +1,627 @@
 {
   "metadata": {
-    "title": "Let's build GPT: from scratch, in code, spelled out",
-    "author": "Andrej Karpathy",
+    "title": "CS221: Artificial Intelligence - Course Introduction and Overview",
+    "author": "Percy Liang",
     "source": "YouTube",
     "video_id": "J8Eh7RqggsU",
     "total_duration": 5238,
     "total_concepts": 29,
-    "extracted_at": "2025-12-04T01:42:05.964Z"
+    "extracted_at": "2025-12-05T02:32:19.330Z"
   },
   "nodes": [
     {
-      "id": "introduction_to_ai",
-      "name": "Introduction to AI",
-      "description": "An overview of Artificial Intelligence, its historical context, key milestones, and the distinction between different intellectual traditions and views on AI.",
+      "id": "expert_systems",
+      "name": "Expert Systems",
+      "description": "AI systems from the 1970s-80s that encode human expert knowledge, typically as deterministic rules, to solve specific, narrow problems like disease diagnosis or order processing. These systems represented an early practical application of AI in industry but were limited by the difficulty of capturing all nuances in fixed rules.",
       "prerequisites": [],
-      "difficulty": "basic"
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 360,
+          "end": 480
+        }
+      ]
     },
     {
-      "id": "ai_agents_view",
-      "name": "AI as Agents View",
-      "description": "The perspective of AI as seeking to create or recreate human-like intelligence, focusing on capabilities such as perception, language, motor control, knowledge, reasoning, and learning from experience.",
-      "prerequisites": [
-        "introduction_to_ai"
-      ],
-      "difficulty": "basic"
+      "id": "artificial_neural_networks",
+      "name": "Artificial Neural Networks",
+      "description": "A computational model inspired by the structure and function of biological neural networks (brain neurons). Early ANNs focused on mathematical formulations and connections to logic, forming the historical root of modern deep learning.",
+      "prerequisites": [],
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 510,
+          "end": 570
+        }
+      ]
     },
     {
-      "id": "ai_tools_view",
-      "name": "AI as Tools View",
-      "description": "The perspective of AI as technology used to benefit society and augment human capabilities, often solving problems that humans don't naturally perform, rather than replicating human intelligence directly.",
+      "id": "perceptron",
+      "name": "Perceptron",
+      "description": "A type of linear classifier, an early form of artificial neural network. It's significant for its mathematical analysis in Minsky and Papert's book, which famously highlighted its limitation in solving non-linearly separable problems like the XOR problem, leading to a temporary decline in neural network research.",
       "prerequisites": [
-        "introduction_to_ai"
+        "artificial_neural_networks"
       ],
-      "difficulty": "basic"
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 580,
+          "end": 680
+        }
+      ]
     },
     {
-      "id": "ethical_considerations_in_ai",
-      "name": "Ethical Considerations in AI",
-      "description": "Discussion of critical issues arising from AI deployment, including adversarial examples (security vulnerabilities), and societal biases (fairness) embedded in models due to training data.",
+      "id": "backpropagation_algorithm",
+      "name": "Backpropagation Algorithm",
+      "description": "A generic algorithm used to efficiently train multi-layer artificial neural networks. It computes the gradient of the loss function with respect to the network's weights, allowing the weights to be adjusted to minimize the loss. Its rediscovery in the 1980s was crucial for advancing neural network capabilities.",
       "prerequisites": [
-        "ai_tools_view"
+        "artificial_neural_networks",
+        "optimization_general"
       ],
-      "difficulty": "basic"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 690,
+          "end": 750
+        }
+      ]
     },
     {
-      "id": "modeling_inference_learning_paradigm",
-      "name": "Modeling, Inference, and Learning Paradigm",
-      "description": "A structured approach to solving complex AI problems by breaking them down into three conceptual pillars: building a simplified model, asking questions (inference), and using data to fit model parameters (learning).",
+      "id": "convolutional_neural_networks",
+      "name": "Convolutional Neural Networks (CNNs)",
+      "description": "A specialized type of neural network architecture particularly effective for processing grid-like data such as images. Early successes include digit recognition (LeCun, 1989) and significant breakthroughs in computer vision (AlexNet, 2012), driving the rise of deep learning.",
       "prerequisites": [
-        "introduction_to_ai"
+        "artificial_neural_networks",
+        "backpropagation_algorithm"
       ],
-      "difficulty": "basic"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 750,
+          "end": 850
+        }
+      ]
+    },
+    {
+      "id": "deep_learning",
+      "name": "Deep Learning",
+      "description": "A subfield of machine learning that utilizes artificial neural networks with multiple layers (deep neural networks) to learn representations from data. It has achieved significant breakthroughs in various AI tasks since the 2010s, often by leveraging large datasets and powerful computing.",
+      "prerequisites": [
+        "artificial_neural_networks",
+        "backpropagation_algorithm",
+        "convolutional_neural_networks"
+      ],
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 850,
+          "end": 930
+        }
+      ]
+    },
+    {
+      "id": "adversarial_examples",
+      "name": "Adversarial Examples",
+      "description": "Inputs designed to intentionally fool machine learning models, often by making imperceptible perturbations to legitimate data. These highlight vulnerabilities and security concerns in AI systems, especially in mission-critical applications like self-driving cars or authentication.",
+      "prerequisites": [
+        "deep_learning"
+      ],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 1560,
+          "end": 1700
+        }
+      ]
+    },
+    {
+      "id": "ai_bias",
+      "name": "AI Bias",
+      "description": "The phenomenon where AI models encode and perpetuate societal biases present in their training data, leading to unfair or discriminatory outcomes. Examples include gender stereotypes in language translation or racial disparities in criminal risk assessment scores.",
+      "prerequisites": [
+        "machine_learning"
+      ],
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 1700,
+          "end": 1950
+        }
+      ]
+    },
+    {
+      "id": "ai_fairness",
+      "name": "Notions of Fairness in AI",
+      "description": "Different mathematical and ethical definitions of fairness applied to AI systems, aiming to mitigate bias and ensure equitable treatment across different demographic groups. These various notions, while individually reasonable, can sometimes be incompatible with each other.",
+      "prerequisites": [
+        "ai_bias"
+      ],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 1950,
+          "end": 2200
+        }
+      ]
     },
     {
       "id": "modeling",
-      "name": "Modeling",
-      "description": "The process of taking a complex real-world problem and creating a mathematically precise, simplified representation (a model) that can be processed by a computer.",
-      "prerequisites": [
-        "modeling_inference_learning_paradigm"
-      ],
-      "difficulty": "basic"
+      "name": "Modeling (AI Paradigm Pillar)",
+      "description": "The first pillar of the AI problem-solving paradigm, involving simplifying the complex real world into a mathematically precise representation (a 'model'). The art of modeling lies in deciding what information to retain and what to discard for effective computation.",
+      "prerequisites": [],
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 2360,
+          "end": 2470
+        }
+      ]
     },
     {
       "id": "inference",
-      "name": "Inference",
-      "description": "The process of asking questions about a given model and computing answers efficiently. This involves using algorithms to derive insights or predictions from the model.",
+      "name": "Inference (AI Paradigm Pillar)",
+      "description": "The second pillar of the AI problem-solving paradigm, which involves asking questions about a given model and computing answers efficiently. Once a problem is formulated as a mathematically well-defined model, inference algorithms can be applied to solve it.",
       "prerequisites": [
-        "modeling_inference_learning_paradigm",
         "modeling"
       ],
-      "difficulty": "basic"
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 2470,
+          "end": 2540
+        }
+      ]
     },
     {
       "id": "learning",
-      "name": "Learning",
-      "description": "The process of specifying a model's structure without all its parameters (a 'skeleton') and then using data along with a generic learning algorithm to automatically determine or 'fit' those parameters.",
+      "name": "Learning (AI Paradigm Pillar)",
+      "description": "The third pillar of the AI problem-solving paradigm, where a model's parameters are fitted from data. Instead of manually encoding all details, a generic learning algorithm uses data to fill in the 'skeleton' of a model, making it representative of the real world.",
       "prerequisites": [
-        "modeling_inference_learning_paradigm",
-        "modeling",
-        "inference"
+        "modeling"
       ],
-      "difficulty": "basic"
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 2540,
+          "end": 2780
+        }
+      ]
     },
     {
-      "id": "machine_learning_general",
+      "id": "machine_learning",
       "name": "Machine Learning (General Concept)",
-      "description": "A foundational building block of AI where systems learn from data to build models that can generalize to new, unseen experiences, shifting complexity from explicit code to data.",
+      "description": "A central approach in AI that uses data to build models, focusing on the ability of models to generalize from training data to new, unseen experiences. It shifts complexity from explicit code to data, enabling powerful systems.",
       "prerequisites": [
+        "modeling",
+        "inference",
         "learning"
       ],
-      "difficulty": "basic"
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 2870,
+          "end": 3070
+        }
+      ]
     },
     {
       "id": "reflex_models",
       "name": "Reflex Models",
-      "description": "AI models that operate based on a fixed set of computations, directly mapping input to output without internal state or explicit planning, emphasizing speed and direct response (e.g., linear classifiers, shallow neural networks).",
+      "description": "The simplest type of AI model that performs a fixed set of computations directly from input to output, without internal state or planning. Examples include linear classifiers and many neural networks used in machine learning, characterized by their speed and direct response.",
       "prerequisites": [
-        "modeling",
-        "machine_learning_general"
+        "machine_learning"
       ],
-      "difficulty": "basic"
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 3070,
+          "end": 3250
+        }
+      ]
     },
     {
       "id": "state_based_models",
       "name": "State-Based Models",
-      "description": "AI models that represent the world as a set of discrete states and possible actions that transition between these states, enabling agents to plan and think ahead, often used in games, robotics, and navigation.",
+      "description": "AI models that represent the world as a set of discrete 'states' (situations) and 'actions' that transition between these states. They are used for problems requiring planning and thinking ahead, such as games, robotics, and navigation, where the sequence of operations is critical.",
       "prerequisites": [
-        "modeling",
-        "inference"
+        "modeling"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 3250,
+          "end": 3500
+        }
+      ]
     },
     {
       "id": "search_problems",
       "name": "Search Problems",
-      "description": "A type of state-based model where the agent has full control and aims to find an optimal sequence of actions (a path) to achieve a goal, typically minimizing cost or maximizing reward.",
+      "description": "A category of state-based models where the agent has full control over actions and aims to find the optimal sequence of actions (path) to reach a goal state, often by minimizing cost. This typically involves exploring a graph of states and actions.",
       "prerequisites": [
         "state_based_models"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 3500,
+          "end": 3600
+        }
+      ]
     },
     {
       "id": "adversarial_games",
       "name": "Adversarial Games",
-      "description": "A specialized type of state-based model where an agent plays against an opponent who is actively trying to counter its moves, requiring strategies that account for intelligent adversaries.",
+      "description": "A category of state-based models where an AI agent interacts with an opponent who is actively trying to thwart its goals. The agent must devise strategies that account for the opponent's moves, often by anticipating their best responses, as seen in games like chess or Pac-Man.",
       "prerequisites": [
-        "state_based_models",
-        "search_problems"
+        "state_based_models"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 3600,
+          "end": 3800
+        }
+      ]
     },
     {
       "id": "variable_based_models",
       "name": "Variable-Based Models",
-      "description": "AI models where solutions are represented as assignments to individual variables under a set of constraints, suitable for problems where the order of operations is not critical, like Sudoku or scheduling.",
+      "description": "AI models that represent a problem solution as an assignment of values to individual variables, subject to certain constraints. These models are suitable for problems where the order of operations is less critical than satisfying all conditions, such as Sudoku.",
       "prerequisites": [
-        "modeling",
-        "inference"
+        "modeling"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 3800,
+          "end": 3950
+        }
+      ]
     },
     {
       "id": "constraint_satisfaction_problems",
       "name": "Constraint Satisfaction Problems (CSPs)",
-      "description": "A class of variable-based models characterized by hard constraints that variables must satisfy, focusing on finding a valid assignment of values to variables that meets all specified conditions.",
+      "description": "A type of variable-based model where the goal is to find values for variables that satisfy a set of 'hard' constraints (e.g., two items cannot occupy the same slot, a person cannot be in two places at once). Sudoku is a classic example of a CSP.",
       "prerequisites": [
         "variable_based_models"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 3950,
+          "end": 4050
+        }
+      ]
     },
     {
       "id": "bayesian_networks",
       "name": "Bayesian Networks",
-      "description": "Variable-based models that represent probabilistic relationships (soft dependencies) between variables, allowing for inference and tracking in situations with uncertainty, such as car tracking with sensor readings.",
+      "description": "A type of variable-based model that represents probabilistic relationships between variables using a directed acyclic graph. They capture 'soft' dependencies and are used for tasks like tracking a car's position given noisy sensor readings by inferring probabilities.",
       "prerequisites": [
         "variable_based_models"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "advanced",
+      "time_ranges": [
+        {
+          "start": 4050,
+          "end": 4190
+        }
+      ]
     },
     {
       "id": "logic_based_ai",
       "name": "Logic-Based AI",
-      "description": "AI systems capable of digesting heterogeneous information, representing it symbolically, and performing reasoning to answer questions and infer new facts, exhibiting a deeper level of understanding compared to purely data-driven systems.",
+      "description": "AI systems that can digest heterogeneous information as declarative statements (facts and rules) and perform reasoning to answer queries or infer consequences. These systems aim for a deeper level of understanding and can learn from single statements and their logical ramifications.",
       "prerequisites": [
         "modeling",
         "inference"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "advanced",
+      "time_ranges": [
+        {
+          "start": 4190,
+          "end": 4920
+        }
+      ]
     },
     {
       "id": "optimization_general",
-      "name": "Optimization (General Concept)",
-      "description": "The general process of finding the 'best' possible solution or configuration (e.g., a path, a set of parameters) that minimizes or maximizes an objective function.",
-      "prerequisites": [
-        "learning"
-      ],
-      "difficulty": "basic"
+      "name": "Optimization",
+      "description": "The general process of finding the 'best' solution (e.g., minimum or maximum value) for a given objective function, either by selecting from a discrete set of options or by finding optimal real-valued parameters.",
+      "prerequisites": [],
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 4990,
+          "end": 5020
+        }
+      ]
     },
     {
       "id": "discrete_optimization",
       "name": "Discrete Optimization",
-      "description": "A type of optimization focused on finding the best discrete object from a finite or countably infinite set of possibilities, such as finding the shortest path in a graph.",
+      "description": "A type of optimization where the goal is to find the best discrete object (e.g., the best path, a specific configuration) from a potentially vast but finite set of possibilities. This often requires clever algorithms as exhaustive search is impractical.",
       "prerequisites": [
         "optimization_general"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 5020,
+          "end": 5080
+        }
+      ]
     },
     {
       "id": "dynamic_programming",
       "name": "Dynamic Programming",
-      "description": "A powerful algorithmic technique for solving complex discrete optimization problems by breaking them down into simpler, overlapping subproblems and storing the results of these subproblems to avoid redundant computations.",
+      "description": "A powerful algorithmic technique for solving complex discrete optimization problems by breaking them down into simpler, overlapping subproblems. It solves each subproblem only once and stores its solution to avoid redundant computations, commonly using recurrence relations and memoization.",
       "prerequisites": [
         "discrete_optimization"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 5080,
+          "end": 6050
+        }
+      ]
     },
     {
-      "id": "recurrences",
-      "name": "Recurrences (in Dynamic Programming)",
-      "description": "The formulation of a complex problem's solution in terms of solutions to smaller instances of the same problem, serving as the mathematical backbone for dynamic programming algorithms.",
+      "id": "recurrence_relation",
+      "name": "Recurrence Relation",
+      "description": "A mathematical equation that defines a sequence where each term is given as a function of its preceding terms. In dynamic programming, it formulates a problem's solution in terms of solutions to smaller subproblems, providing the structure for recursive computation.",
       "prerequisites": [
         "dynamic_programming"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 5500,
+          "end": 5700
+        }
+      ]
     },
     {
       "id": "memoization",
       "name": "Memoization",
-      "description": "An optimization technique used in dynamic programming to cache the results of expensive function calls and return the cached result when the same inputs occur again, thereby reducing redundant computations.",
-      "prerequisites": [
-        "recurrences"
-      ],
-      "difficulty": "intermediate"
-    },
-    {
-      "id": "edit_distance_problem",
-      "name": "Edit Distance Problem",
-      "description": "A classic discrete optimization problem solved using dynamic programming, involving finding the minimum number of single-character edits (insertions, deletions, substitutions) required to transform one string into another.",
+      "description": "An optimization technique used primarily in dynamic programming where the results of expensive function calls are stored (cached) and returned when the same inputs occur again, preventing redundant computations in recursive functions defined by recurrence relations.",
       "prerequisites": [
         "dynamic_programming",
-        "recurrences",
-        "memoization"
+        "recurrence_relation"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 5800,
+          "end": 6000
+        }
+      ]
     },
     {
       "id": "continuous_optimization",
       "name": "Continuous Optimization",
-      "description": "A type of optimization that seeks to find the best vector of real numbers (e.g., model parameters) that minimizes or maximizes a continuous objective function.",
+      "description": "A type of optimization where the goal is to find the best vector of real numbers that minimizes (or maximizes) a given objective function. This typically involves techniques from calculus, such as finding gradients to determine the direction of improvement.",
       "prerequisites": [
         "optimization_general"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 6050,
+          "end": 6150
+        }
+      ]
     },
     {
       "id": "regression",
       "name": "Regression",
-      "description": "A machine learning technique for predicting a continuous output variable based on one or more input variables, often involving fitting a line or curve to data points.",
+      "description": "A machine learning task where the goal is to predict a continuous output variable based on one or more input variables. This is typically achieved by fitting a function (e.g., a line) to observed data points, often by minimizing an error metric like the least squares objective.",
       "prerequisites": [
         "continuous_optimization",
-        "machine_learning_general"
+        "machine_learning"
       ],
-      "difficulty": "intermediate"
-    },
-    {
-      "id": "least_squares",
-      "name": "Least Squares",
-      "description": "A common principle used in regression to quantify the 'badness' of a model's fit by summing the squared differences between predicted and actual values, aiming to minimize this sum.",
-      "prerequisites": [
-        "regression",
-        "continuous_optimization"
-      ],
-      "difficulty": "intermediate"
-    },
-    {
-      "id": "derivative_gradient",
-      "name": "Derivative and Gradient",
-      "description": "Mathematical concepts representing the rate of change of a function. The derivative applies to single-variable functions, while the gradient generalizes this to multi-variable functions, indicating the direction of the steepest ascent.",
-      "prerequisites": [
-        "continuous_optimization"
-      ],
-      "difficulty": "basic"
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 6150,
+          "end": 6400
+        }
+      ]
     },
     {
       "id": "gradient_descent",
       "name": "Gradient Descent",
-      "description": "An iterative continuous optimization algorithm that finds the minimum of an objective function by repeatedly taking steps proportional to the negative of the gradient of the function at the current point.",
+      "description": "An iterative optimization algorithm used to find the local minimum of a differentiable function. It repeatedly takes small steps in the direction opposite to the gradient (the steepest descent) of the function at the current point, guided by a step size or learning rate.",
       "prerequisites": [
         "continuous_optimization",
-        "derivative_gradient",
-        "least_squares"
+        "regression"
       ],
-      "difficulty": "intermediate"
-    },
-    {
-      "id": "step_size_learning_rate",
-      "name": "Step Size (Learning Rate)",
-      "description": "A hyperparameter in gradient descent that controls the magnitude of the steps taken in the direction opposite to the gradient, influencing the speed and stability of convergence to a minimum.",
-      "prerequisites": [
-        "gradient_descent"
-      ],
-      "difficulty": "intermediate"
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 6700,
+          "end": 7300
+        }
+      ]
     }
   ],
   "edges": [
     {
-      "from": "ai_agents_view",
-      "to": "introduction_to_ai",
-      "type": "prerequisite"
+      "from": "perceptron",
+      "to": "artificial_neural_networks",
+      "type": "is_type_of"
     },
     {
-      "from": "ai_tools_view",
-      "to": "introduction_to_ai",
-      "type": "prerequisite"
+      "from": "backpropagation_algorithm",
+      "to": "artificial_neural_networks",
+      "type": "enables"
     },
     {
-      "from": "ethical_considerations_in_ai",
-      "to": "ai_tools_view",
-      "type": "prerequisite"
+      "from": "backpropagation_algorithm",
+      "to": "optimization_general",
+      "type": "uses"
     },
     {
-      "from": "modeling_inference_learning_paradigm",
-      "to": "introduction_to_ai",
-      "type": "prerequisite"
+      "from": "convolutional_neural_networks",
+      "to": "artificial_neural_networks",
+      "type": "is_type_of"
     },
     {
-      "from": "modeling",
-      "to": "modeling_inference_learning_paradigm",
-      "type": "prerequisite"
+      "from": "convolutional_neural_networks",
+      "to": "backpropagation_algorithm",
+      "type": "uses"
     },
     {
-      "from": "inference",
-      "to": "modeling_inference_learning_paradigm",
-      "type": "prerequisite"
+      "from": "deep_learning",
+      "to": "artificial_neural_networks",
+      "type": "is_field_of"
+    },
+    {
+      "from": "deep_learning",
+      "to": "backpropagation_algorithm",
+      "type": "uses"
+    },
+    {
+      "from": "deep_learning",
+      "to": "convolutional_neural_networks",
+      "type": "uses"
+    },
+    {
+      "from": "adversarial_examples",
+      "to": "deep_learning",
+      "type": "applies_to"
+    },
+    {
+      "from": "ai_bias",
+      "to": "machine_learning",
+      "type": "arises_in"
+    },
+    {
+      "from": "ai_fairness",
+      "to": "ai_bias",
+      "type": "addresses"
     },
     {
       "from": "inference",
       "to": "modeling",
-      "type": "prerequisite"
-    },
-    {
-      "from": "learning",
-      "to": "modeling_inference_learning_paradigm",
-      "type": "prerequisite"
+      "type": "depends_on"
     },
     {
       "from": "learning",
       "to": "modeling",
-      "type": "prerequisite"
+      "type": "depends_on"
     },
     {
-      "from": "learning",
+      "from": "machine_learning",
+      "to": "modeling",
+      "type": "uses"
+    },
+    {
+      "from": "machine_learning",
       "to": "inference",
-      "type": "prerequisite"
+      "type": "uses"
     },
     {
-      "from": "machine_learning_general",
+      "from": "machine_learning",
       "to": "learning",
-      "type": "prerequisite"
+      "type": "is_based_on"
     },
     {
       "from": "reflex_models",
-      "to": "modeling",
-      "type": "prerequisite"
-    },
-    {
-      "from": "reflex_models",
-      "to": "machine_learning_general",
-      "type": "prerequisite"
+      "to": "machine_learning",
+      "type": "is_type_of"
     },
     {
       "from": "state_based_models",
       "to": "modeling",
-      "type": "prerequisite"
-    },
-    {
-      "from": "state_based_models",
-      "to": "inference",
-      "type": "prerequisite"
+      "type": "is_type_of"
     },
     {
       "from": "search_problems",
       "to": "state_based_models",
-      "type": "prerequisite"
+      "type": "is_type_of"
     },
     {
       "from": "adversarial_games",
       "to": "state_based_models",
-      "type": "prerequisite"
-    },
-    {
-      "from": "adversarial_games",
-      "to": "search_problems",
-      "type": "prerequisite"
+      "type": "is_type_of"
     },
     {
       "from": "variable_based_models",
       "to": "modeling",
-      "type": "prerequisite"
-    },
-    {
-      "from": "variable_based_models",
-      "to": "inference",
-      "type": "prerequisite"
+      "type": "is_type_of"
     },
     {
       "from": "constraint_satisfaction_problems",
       "to": "variable_based_models",
-      "type": "prerequisite"
+      "type": "is_type_of"
     },
     {
       "from": "bayesian_networks",
       "to": "variable_based_models",
-      "type": "prerequisite"
+      "type": "is_type_of"
     },
     {
       "from": "logic_based_ai",
       "to": "modeling",
-      "type": "prerequisite"
+      "type": "uses"
     },
     {
       "from": "logic_based_ai",
       "to": "inference",
-      "type": "prerequisite"
-    },
-    {
-      "from": "optimization_general",
-      "to": "learning",
-      "type": "prerequisite"
+      "type": "uses"
     },
     {
       "from": "discrete_optimization",
       "to": "optimization_general",
-      "type": "prerequisite"
+      "type": "is_type_of"
     },
     {
       "from": "dynamic_programming",
       "to": "discrete_optimization",
-      "type": "prerequisite"
+      "type": "solves"
     },
     {
-      "from": "recurrences",
+      "from": "recurrence_relation",
       "to": "dynamic_programming",
-      "type": "prerequisite"
+      "type": "is_component_of"
     },
     {
       "from": "memoization",
-      "to": "recurrences",
-      "type": "prerequisite"
-    },
-    {
-      "from": "edit_distance_problem",
       "to": "dynamic_programming",
-      "type": "prerequisite"
+      "type": "is_component_of"
     },
     {
-      "from": "edit_distance_problem",
-      "to": "recurrences",
-      "type": "prerequisite"
-    },
-    {
-      "from": "edit_distance_problem",
-      "to": "memoization",
-      "type": "prerequisite"
+      "from": "memoization",
+      "to": "recurrence_relation",
+      "type": "optimizes"
     },
     {
       "from": "continuous_optimization",
       "to": "optimization_general",
-      "type": "prerequisite"
+      "type": "is_type_of"
     },
     {
       "from": "regression",
       "to": "continuous_optimization",
-      "type": "prerequisite"
+      "type": "uses"
     },
     {
       "from": "regression",
-      "to": "machine_learning_general",
-      "type": "prerequisite"
+      "to": "machine_learning",
+      "type": "is_task_of"
     },
     {
-      "from": "least_squares",
+      "from": "gradient_descent",
+      "to": "continuous_optimization",
+      "type": "solves"
+    },
+    {
+      "from": "gradient_descent",
       "to": "regression",
-      "type": "prerequisite"
-    },
-    {
-      "from": "least_squares",
-      "to": "continuous_optimization",
-      "type": "prerequisite"
-    },
-    {
-      "from": "derivative_gradient",
-      "to": "continuous_optimization",
-      "type": "prerequisite"
-    },
-    {
-      "from": "gradient_descent",
-      "to": "continuous_optimization",
-      "type": "prerequisite"
-    },
-    {
-      "from": "gradient_descent",
-      "to": "derivative_gradient",
-      "type": "prerequisite"
-    },
-    {
-      "from": "gradient_descent",
-      "to": "least_squares",
-      "type": "prerequisite"
-    },
-    {
-      "from": "step_size_learning_rate",
-      "to": "gradient_descent",
-      "type": "prerequisite"
+      "type": "applied_to"
     }
   ]
 }
