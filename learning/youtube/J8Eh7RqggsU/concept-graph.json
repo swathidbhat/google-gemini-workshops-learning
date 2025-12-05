@@ -1,0 +1,498 @@
+{
+  "metadata": {
+    "title": "Let's build GPT: from scratch, in code, spelled out",
+    "author": "Andrej Karpathy",
+    "source": "YouTube",
+    "video_id": "J8Eh7RqggsU",
+    "total_duration": 5238,
+    "total_concepts": 29,
+    "extracted_at": "2025-12-04T01:42:05.964Z"
+  },
+  "nodes": [
+    {
+      "id": "introduction_to_ai",
+      "name": "Introduction to AI",
+      "description": "An overview of Artificial Intelligence, its historical context, key milestones, and the distinction between different intellectual traditions and views on AI.",
+      "prerequisites": [],
+      "difficulty": "basic"
+    },
+    {
+      "id": "ai_agents_view",
+      "name": "AI as Agents View",
+      "description": "The perspective of AI as seeking to create or recreate human-like intelligence, focusing on capabilities such as perception, language, motor control, knowledge, reasoning, and learning from experience.",
+      "prerequisites": [
+        "introduction_to_ai"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "ai_tools_view",
+      "name": "AI as Tools View",
+      "description": "The perspective of AI as technology used to benefit society and augment human capabilities, often solving problems that humans don't naturally perform, rather than replicating human intelligence directly.",
+      "prerequisites": [
+        "introduction_to_ai"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "ethical_considerations_in_ai",
+      "name": "Ethical Considerations in AI",
+      "description": "Discussion of critical issues arising from AI deployment, including adversarial examples (security vulnerabilities), and societal biases (fairness) embedded in models due to training data.",
+      "prerequisites": [
+        "ai_tools_view"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "modeling_inference_learning_paradigm",
+      "name": "Modeling, Inference, and Learning Paradigm",
+      "description": "A structured approach to solving complex AI problems by breaking them down into three conceptual pillars: building a simplified model, asking questions (inference), and using data to fit model parameters (learning).",
+      "prerequisites": [
+        "introduction_to_ai"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "modeling",
+      "name": "Modeling",
+      "description": "The process of taking a complex real-world problem and creating a mathematically precise, simplified representation (a model) that can be processed by a computer.",
+      "prerequisites": [
+        "modeling_inference_learning_paradigm"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "inference",
+      "name": "Inference",
+      "description": "The process of asking questions about a given model and computing answers efficiently. This involves using algorithms to derive insights or predictions from the model.",
+      "prerequisites": [
+        "modeling_inference_learning_paradigm",
+        "modeling"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "learning",
+      "name": "Learning",
+      "description": "The process of specifying a model's structure without all its parameters (a 'skeleton') and then using data along with a generic learning algorithm to automatically determine or 'fit' those parameters.",
+      "prerequisites": [
+        "modeling_inference_learning_paradigm",
+        "modeling",
+        "inference"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "machine_learning_general",
+      "name": "Machine Learning (General Concept)",
+      "description": "A foundational building block of AI where systems learn from data to build models that can generalize to new, unseen experiences, shifting complexity from explicit code to data.",
+      "prerequisites": [
+        "learning"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "reflex_models",
+      "name": "Reflex Models",
+      "description": "AI models that operate based on a fixed set of computations, directly mapping input to output without internal state or explicit planning, emphasizing speed and direct response (e.g., linear classifiers, shallow neural networks).",
+      "prerequisites": [
+        "modeling",
+        "machine_learning_general"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "state_based_models",
+      "name": "State-Based Models",
+      "description": "AI models that represent the world as a set of discrete states and possible actions that transition between these states, enabling agents to plan and think ahead, often used in games, robotics, and navigation.",
+      "prerequisites": [
+        "modeling",
+        "inference"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "search_problems",
+      "name": "Search Problems",
+      "description": "A type of state-based model where the agent has full control and aims to find an optimal sequence of actions (a path) to achieve a goal, typically minimizing cost or maximizing reward.",
+      "prerequisites": [
+        "state_based_models"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "adversarial_games",
+      "name": "Adversarial Games",
+      "description": "A specialized type of state-based model where an agent plays against an opponent who is actively trying to counter its moves, requiring strategies that account for intelligent adversaries.",
+      "prerequisites": [
+        "state_based_models",
+        "search_problems"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "variable_based_models",
+      "name": "Variable-Based Models",
+      "description": "AI models where solutions are represented as assignments to individual variables under a set of constraints, suitable for problems where the order of operations is not critical, like Sudoku or scheduling.",
+      "prerequisites": [
+        "modeling",
+        "inference"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "constraint_satisfaction_problems",
+      "name": "Constraint Satisfaction Problems (CSPs)",
+      "description": "A class of variable-based models characterized by hard constraints that variables must satisfy, focusing on finding a valid assignment of values to variables that meets all specified conditions.",
+      "prerequisites": [
+        "variable_based_models"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "bayesian_networks",
+      "name": "Bayesian Networks",
+      "description": "Variable-based models that represent probabilistic relationships (soft dependencies) between variables, allowing for inference and tracking in situations with uncertainty, such as car tracking with sensor readings.",
+      "prerequisites": [
+        "variable_based_models"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "logic_based_ai",
+      "name": "Logic-Based AI",
+      "description": "AI systems capable of digesting heterogeneous information, representing it symbolically, and performing reasoning to answer questions and infer new facts, exhibiting a deeper level of understanding compared to purely data-driven systems.",
+      "prerequisites": [
+        "modeling",
+        "inference"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "optimization_general",
+      "name": "Optimization (General Concept)",
+      "description": "The general process of finding the 'best' possible solution or configuration (e.g., a path, a set of parameters) that minimizes or maximizes an objective function.",
+      "prerequisites": [
+        "learning"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "discrete_optimization",
+      "name": "Discrete Optimization",
+      "description": "A type of optimization focused on finding the best discrete object from a finite or countably infinite set of possibilities, such as finding the shortest path in a graph.",
+      "prerequisites": [
+        "optimization_general"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "dynamic_programming",
+      "name": "Dynamic Programming",
+      "description": "A powerful algorithmic technique for solving complex discrete optimization problems by breaking them down into simpler, overlapping subproblems and storing the results of these subproblems to avoid redundant computations.",
+      "prerequisites": [
+        "discrete_optimization"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "recurrences",
+      "name": "Recurrences (in Dynamic Programming)",
+      "description": "The formulation of a complex problem's solution in terms of solutions to smaller instances of the same problem, serving as the mathematical backbone for dynamic programming algorithms.",
+      "prerequisites": [
+        "dynamic_programming"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "memoization",
+      "name": "Memoization",
+      "description": "An optimization technique used in dynamic programming to cache the results of expensive function calls and return the cached result when the same inputs occur again, thereby reducing redundant computations.",
+      "prerequisites": [
+        "recurrences"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "edit_distance_problem",
+      "name": "Edit Distance Problem",
+      "description": "A classic discrete optimization problem solved using dynamic programming, involving finding the minimum number of single-character edits (insertions, deletions, substitutions) required to transform one string into another.",
+      "prerequisites": [
+        "dynamic_programming",
+        "recurrences",
+        "memoization"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "continuous_optimization",
+      "name": "Continuous Optimization",
+      "description": "A type of optimization that seeks to find the best vector of real numbers (e.g., model parameters) that minimizes or maximizes a continuous objective function.",
+      "prerequisites": [
+        "optimization_general"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "regression",
+      "name": "Regression",
+      "description": "A machine learning technique for predicting a continuous output variable based on one or more input variables, often involving fitting a line or curve to data points.",
+      "prerequisites": [
+        "continuous_optimization",
+        "machine_learning_general"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "least_squares",
+      "name": "Least Squares",
+      "description": "A common principle used in regression to quantify the 'badness' of a model's fit by summing the squared differences between predicted and actual values, aiming to minimize this sum.",
+      "prerequisites": [
+        "regression",
+        "continuous_optimization"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "derivative_gradient",
+      "name": "Derivative and Gradient",
+      "description": "Mathematical concepts representing the rate of change of a function. The derivative applies to single-variable functions, while the gradient generalizes this to multi-variable functions, indicating the direction of the steepest ascent.",
+      "prerequisites": [
+        "continuous_optimization"
+      ],
+      "difficulty": "basic"
+    },
+    {
+      "id": "gradient_descent",
+      "name": "Gradient Descent",
+      "description": "An iterative continuous optimization algorithm that finds the minimum of an objective function by repeatedly taking steps proportional to the negative of the gradient of the function at the current point.",
+      "prerequisites": [
+        "continuous_optimization",
+        "derivative_gradient",
+        "least_squares"
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "step_size_learning_rate",
+      "name": "Step Size (Learning Rate)",
+      "description": "A hyperparameter in gradient descent that controls the magnitude of the steps taken in the direction opposite to the gradient, influencing the speed and stability of convergence to a minimum.",
+      "prerequisites": [
+        "gradient_descent"
+      ],
+      "difficulty": "intermediate"
+    }
+  ],
+  "edges": [
+    {
+      "from": "ai_agents_view",
+      "to": "introduction_to_ai",
+      "type": "prerequisite"
+    },
+    {
+      "from": "ai_tools_view",
+      "to": "introduction_to_ai",
+      "type": "prerequisite"
+    },
+    {
+      "from": "ethical_considerations_in_ai",
+      "to": "ai_tools_view",
+      "type": "prerequisite"
+    },
+    {
+      "from": "modeling_inference_learning_paradigm",
+      "to": "introduction_to_ai",
+      "type": "prerequisite"
+    },
+    {
+      "from": "modeling",
+      "to": "modeling_inference_learning_paradigm",
+      "type": "prerequisite"
+    },
+    {
+      "from": "inference",
+      "to": "modeling_inference_learning_paradigm",
+      "type": "prerequisite"
+    },
+    {
+      "from": "inference",
+      "to": "modeling",
+      "type": "prerequisite"
+    },
+    {
+      "from": "learning",
+      "to": "modeling_inference_learning_paradigm",
+      "type": "prerequisite"
+    },
+    {
+      "from": "learning",
+      "to": "modeling",
+      "type": "prerequisite"
+    },
+    {
+      "from": "learning",
+      "to": "inference",
+      "type": "prerequisite"
+    },
+    {
+      "from": "machine_learning_general",
+      "to": "learning",
+      "type": "prerequisite"
+    },
+    {
+      "from": "reflex_models",
+      "to": "modeling",
+      "type": "prerequisite"
+    },
+    {
+      "from": "reflex_models",
+      "to": "machine_learning_general",
+      "type": "prerequisite"
+    },
+    {
+      "from": "state_based_models",
+      "to": "modeling",
+      "type": "prerequisite"
+    },
+    {
+      "from": "state_based_models",
+      "to": "inference",
+      "type": "prerequisite"
+    },
+    {
+      "from": "search_problems",
+      "to": "state_based_models",
+      "type": "prerequisite"
+    },
+    {
+      "from": "adversarial_games",
+      "to": "state_based_models",
+      "type": "prerequisite"
+    },
+    {
+      "from": "adversarial_games",
+      "to": "search_problems",
+      "type": "prerequisite"
+    },
+    {
+      "from": "variable_based_models",
+      "to": "modeling",
+      "type": "prerequisite"
+    },
+    {
+      "from": "variable_based_models",
+      "to": "inference",
+      "type": "prerequisite"
+    },
+    {
+      "from": "constraint_satisfaction_problems",
+      "to": "variable_based_models",
+      "type": "prerequisite"
+    },
+    {
+      "from": "bayesian_networks",
+      "to": "variable_based_models",
+      "type": "prerequisite"
+    },
+    {
+      "from": "logic_based_ai",
+      "to": "modeling",
+      "type": "prerequisite"
+    },
+    {
+      "from": "logic_based_ai",
+      "to": "inference",
+      "type": "prerequisite"
+    },
+    {
+      "from": "optimization_general",
+      "to": "learning",
+      "type": "prerequisite"
+    },
+    {
+      "from": "discrete_optimization",
+      "to": "optimization_general",
+      "type": "prerequisite"
+    },
+    {
+      "from": "dynamic_programming",
+      "to": "discrete_optimization",
+      "type": "prerequisite"
+    },
+    {
+      "from": "recurrences",
+      "to": "dynamic_programming",
+      "type": "prerequisite"
+    },
+    {
+      "from": "memoization",
+      "to": "recurrences",
+      "type": "prerequisite"
+    },
+    {
+      "from": "edit_distance_problem",
+      "to": "dynamic_programming",
+      "type": "prerequisite"
+    },
+    {
+      "from": "edit_distance_problem",
+      "to": "recurrences",
+      "type": "prerequisite"
+    },
+    {
+      "from": "edit_distance_problem",
+      "to": "memoization",
+      "type": "prerequisite"
+    },
+    {
+      "from": "continuous_optimization",
+      "to": "optimization_general",
+      "type": "prerequisite"
+    },
+    {
+      "from": "regression",
+      "to": "continuous_optimization",
+      "type": "prerequisite"
+    },
+    {
+      "from": "regression",
+      "to": "machine_learning_general",
+      "type": "prerequisite"
+    },
+    {
+      "from": "least_squares",
+      "to": "regression",
+      "type": "prerequisite"
+    },
+    {
+      "from": "least_squares",
+      "to": "continuous_optimization",
+      "type": "prerequisite"
+    },
+    {
+      "from": "derivative_gradient",
+      "to": "continuous_optimization",
+      "type": "prerequisite"
+    },
+    {
+      "from": "gradient_descent",
+      "to": "continuous_optimization",
+      "type": "prerequisite"
+    },
+    {
+      "from": "gradient_descent",
+      "to": "derivative_gradient",
+      "type": "prerequisite"
+    },
+    {
+      "from": "gradient_descent",
+      "to": "least_squares",
+      "type": "prerequisite"
+    },
+    {
+      "from": "step_size_learning_rate",
+      "to": "gradient_descent",
+      "type": "prerequisite"
+    }
+  ]
+}

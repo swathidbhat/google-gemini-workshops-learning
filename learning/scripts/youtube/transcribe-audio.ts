@@ -5,10 +5,12 @@
  *   npx ts-node scripts/youtube/transcribe-audio.ts youtube/kCc8FmEb1nY/audio.mp3
  */
 
-import { v2, protos } from '@google-cloud/speech';
-import { Storage } from '@google-cloud/storage';
+import { OAuth2Client } from 'google-auth-library';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import * as http from 'http';
+import { URL } from 'url';
+import { exec } from 'child_process';
 
 interface SegmentInfo {
   text: string;
@@ -26,42 +28,144 @@ interface TranscriptResult {
   transcribed_at: string;
 }
 
-async function uploadToGCS(audioFile: string, projectId: string): Promise<string> {
-  const storage = new Storage({ projectId });
+async function uploadToGCS(audioFile: string, projectId: string, accessToken: string): Promise<string> {
   const bucketName = `${projectId}-speech-transcripts`;
   const fileName = `transcripts/${Date.now()}-${path.basename(audioFile)}`;
+  const gcsUri = `gs://${bucketName}/${fileName}`;
   
-  // Ensure bucket exists
-  const [buckets] = await storage.getBuckets();
-  const bucketExists = buckets.some(b => b.name === bucketName);
+  console.log(`📦 Uploading to GCS: ${gcsUri}\n`);
   
-  if (!bucketExists) {
+  // Check if bucket exists, create if not
+  const bucketUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}`;
+  const checkResponse = await fetch(bucketUrl, {
+    headers: { 'Authorization': `Bearer ${accessToken}` },
+  });
+  
+  if (checkResponse.status === 404) {
     console.log(`📦 Creating bucket: ${bucketName}`);
-    await storage.createBucket(bucketName, {
-      location: 'US',
-      storageClass: 'STANDARD',
+    const createResponse = await fetch(`https://storage.googleapis.com/storage/v1/b?project=${projectId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: bucketName,
+        location: 'US',
+        storageClass: 'STANDARD',
+      }),
     });
+    
+    if (!createResponse.ok) {
+      const error = await createResponse.text();
+      throw new Error(`Failed to create bucket: ${error}`);
+    }
   }
   
-  const bucket = storage.bucket(bucketName);
-  const blob = bucket.file(fileName);
+  // Upload file using resumable upload
+  const audioContent = await fs.readFile(audioFile);
+  const uploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${bucketName}/o?uploadType=media&name=${encodeURIComponent(fileName)}`;
   
-  console.log(`📤 Uploading to GCS: gs://${bucketName}/${fileName}`);
-  await blob.save(await fs.readFile(audioFile));
+  const uploadResponse = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'audio/mpeg',
+    },
+    body: audioContent,
+  });
   
-  return `gs://${bucketName}/${fileName}`;
+  if (!uploadResponse.ok) {
+    const error = await uploadResponse.text();
+    throw new Error(`Failed to upload to GCS: ${error}`);
+  }
+  
+  console.log(`✅ Uploaded to GCS\n`);
+  return gcsUri;
+}
+
+async function getAccessToken(): Promise<string> {
+  const clientId = process.env.GOOGLE_OAUTH2_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_OAUTH2_CLIENT_SECRET;
+  
+  if (!clientId || !clientSecret) {
+    throw new Error('GOOGLE_OAUTH2_CLIENT_ID and GOOGLE_OAUTH2_CLIENT_SECRET must be set in .env.local');
+  }
+
+  const oauth2Client = new OAuth2Client(
+    clientId,
+    clientSecret,
+    'http://localhost:8080'
+  );
+
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: [
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/cloud-speech'
+    ],
+  });
+
+  console.log('🔐 OAuth2 Authentication Required');
+  console.log('📋 Opening browser for authentication...\n');
+  console.log(`If browser doesn't open, visit: ${authUrl}\n`);
+
+  // Open browser
+  exec(`open "${authUrl}"`);
+
+  // Start local server to receive callback
+  return new Promise((resolve, reject) => {
+    const server = http.createServer(async (req, res) => {
+      if (!req.url) return;
+      
+      const url = new URL(req.url, 'http://localhost:8080');
+      const code = url.searchParams.get('code');
+
+      if (code) {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end('<html><body><h1>Authentication successful! You can close this window.</h1></body></html>');
+        
+        server.close();
+        
+        try {
+          const { tokens } = await oauth2Client.getToken(code);
+          if (!tokens.access_token) {
+            reject(new Error('No access token received'));
+            return;
+          }
+          resolve(tokens.access_token);
+        } catch (error: any) {
+          reject(new Error(`Failed to get token: ${error.message}`));
+        }
+      } else {
+        res.writeHead(400);
+        res.end('Missing authorization code');
+      }
+    });
+
+    server.listen(8080, () => {
+      console.log('⏳ Waiting for authentication...');
+    });
+
+    // Timeout after 5 minutes
+    setTimeout(() => {
+      server.close();
+      reject(new Error('Authentication timeout'));
+    }, 300000);
+  });
 }
 
 async function transcribeAudio(audioFile: string): Promise<TranscriptResult> {
   console.log(`🎙️  Transcribing: ${audioFile}\n`);
 
-  // Initialize client
-  const client = new v2.SpeechClient();
-  
   const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT;
   if (!projectId) {
     throw new Error('GOOGLE_CLOUD_PROJECT environment variable not set');
   }
+
+  // Get OAuth2 access token
+  const accessToken = await getAccessToken();
+  console.log('✅ Authentication successful\n');
 
   // Check file size
   const stats = await fs.stat(audioFile);
@@ -71,140 +175,150 @@ async function transcribeAudio(audioFile: string): Promise<TranscriptResult> {
   let audioUri: string | undefined;
   let audioContent: Buffer | undefined;
   
-  // Force batch mode for all files (testing batch code path)
-  if (fileSizeMB > 0) {
-    console.log(`🧪 Forcing batch mode for testing...\n`);
-    audioUri = await uploadToGCS(audioFile, projectId);
+  // Use GCS for files > 10MB (API limit)
+  if (fileSizeMB > 10) {
+    console.log(`📦 File too large for inline upload, using GCS...\n`);
+    audioUri = await uploadToGCS(audioFile, projectId, accessToken);
   } else {
     console.log(`✅ File size OK for direct upload\n`);
     audioContent = await fs.readFile(audioFile);
   }
-
-  // Configure recognition request
-  const request: any = {
-    recognizer: `projects/${projectId}/locations/global/recognizers/_`,
-    config: {
-      autoDecodingConfig: {},
-      languageCodes: ['en-US'],
-      model: 'long',  // Optimized for long-form content (videos)
-      features: {
-        enableAutomaticPunctuation: true,
-      },
-    },
-  };
   
-  // Add either content or uri
-  if (audioUri) {
-    request.uri = audioUri;
-  } else {
-    request.content = audioContent;
-  }
-
-  console.log('🔄 Sending to Google Cloud Speech-to-Text...');
+  console.log('🔄 Sending to Google Cloud Speech-to-Text via REST API...');
   console.log('⏳ This may take a few minutes for long videos...\n');
 
-  // Transcribe - use batchRecognize for GCS URIs, recognize for inline content
-  let response;
+  let apiResponse: any;
+  
   if (audioUri) {
     // Use batch recognition for GCS files
-    console.log('📦 Using batch recognition for GCS file...\n');
+    const batchUrl = `https://speech.googleapis.com/v2/projects/${projectId}/locations/global/recognizers/_:batchRecognize`;
     
     const batchRequest = {
-      recognizer: `projects/${projectId}/locations/global/recognizers/_`,
-      config: request.config,
-      files: [{
-        uri: audioUri,
-      }],
+      config: {
+        autoDecodingConfig: {},
+        languageCodes: ['en-US'],
+        model: 'long',
+        features: {
+          enableAutomaticPunctuation: true,
+        },
+      },
+      files: [{ uri: audioUri }],
       recognitionOutputConfig: {
-        inlineResponseConfig: {},  // Return results inline rather than to GCS
+        inlineResponseConfig: {},
       },
     };
     
-    const [operation] = await client.batchRecognize(batchRequest);
-    const operationName = operation.name!;  // Assert non-null since batchRecognize always returns a name
-    console.log(`🔄 Operation started: ${operationName}\n`);
-    
-    console.log('⏳ Waiting for batch operation to complete...');
-    console.log('   (This may take several minutes for long videos)\n');
-    
-    // Poll for progress using the operations client
-    let lastProgress = 0;
-    let pollCount = 0;
-    const operationsClient = client.operationsClient;
-    
-    let batchResponse: any;
-    const pollInterval = setInterval(async () => {
-      pollCount++;
-      try {
-        // Use the specialized checkBatchRecognizeProgress method for proper decoding
-        const operation = await client.checkBatchRecognizeProgress(operationName);
-        const done = operation.done;
-        
-        // Cast metadata to any to access progressPercent (protobuf-generated types)
-        const metadata = operation.metadata as any;
-        const progress = metadata?.progressPercent || 0;
-        
-        // Show polling heartbeat every 4 polls (20 seconds)
-        if (pollCount % 4 === 0) {
-          const elapsed = (pollCount * 5) / 60;
-          console.log(`💓 Polling... (${elapsed.toFixed(1)} min elapsed, status: ${done ? 'done' : 'running'})`);
-        }
-        
-        if (progress > lastProgress) {
-          lastProgress = progress;
-          console.log(`⏳ Progress: ${progress}%`);
-        }
-        
-        // Check if operation is complete
-        if (done) {
-          clearInterval(pollInterval);
-          
-          // Response is wrapped in google.protobuf.Any - need to decode it
-          const anyResponse = operation.response as any;
-          if (anyResponse && anyResponse.value) {
-            const responseBuffer = Buffer.isBuffer(anyResponse.value)
-              ? anyResponse.value
-              : Buffer.from(anyResponse.value.data || anyResponse.value);
-            
-            batchResponse = protos.google.cloud.speech.v2.BatchRecognizeResponse.decode(responseBuffer);
-          } else {
-            throw new Error('Operation completed but no response value found');
-          }
-          
-          console.log('\n✅ Batch operation complete!\n');
-        }
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        console.log(`⚠️  Polling attempt ${pollCount}: ${errorMessage}`);
-      }
-    }, 5000);  // Poll every 5 seconds
-    
-    // Wait for polling to detect completion
-    await new Promise<void>((resolve) => {
-      const checkInterval = setInterval(() => {
-        if (batchResponse) {
-          clearInterval(checkInterval);
-          resolve();
-        }
-      }, 100);  // Check every 100ms
+    const batchResponse = await fetch(batchUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(batchRequest),
     });
     
-    console.log('✅ Batch operation complete!\n');
-    
-    // Extract results from batch response
-    const audioResult = batchResponse.results?.[audioUri];
-    const transcriptResults = audioResult?.transcript;
-    
-    if (!transcriptResults?.results) {
-      throw new Error('No transcript results found in batch response');
+    if (!batchResponse.ok) {
+      const errorText = await batchResponse.text();
+      throw new Error(`Speech-to-Text API error: ${batchResponse.status} ${batchResponse.statusText}\n${errorText}`);
     }
     
-    response = {
-      results: transcriptResults.results,
-    };
+    const batchResult = await batchResponse.json();
+    const operationName = batchResult.name;
+    
+    console.log(`🔄 Operation started: ${operationName}\n`);
+    console.log('⏳ Waiting for batch operation to complete...\n');
+    
+    // Poll for completion
+    const operationUrl = `https://speech.googleapis.com/v2/${operationName}`;
+    let done = false;
+    let pollCount = 0;
+    
+    while (!done) {
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+      pollCount++;
+      
+      if (pollCount % 4 === 0) {
+        const elapsed = (pollCount * 5) / 60;
+        console.log(`💓 Polling... (${elapsed.toFixed(1)} min elapsed)`);
+      }
+      
+      const opResponse = await fetch(operationUrl, {
+        headers: { 'Authorization': `Bearer ${accessToken}` },
+      });
+      
+      const operation = await opResponse.json();
+      done = operation.done;
+      
+      if (done) {
+        // Save full operation for debugging
+        await fs.writeFile('youtube/J8Eh7RqggsU/debug-operation.json', JSON.stringify(operation, null, 2));
+        
+        // The response is in operation.response, but it might be encoded
+        if (operation.response) {
+          apiResponse = operation.response;
+        } else if (operation.result) {
+          apiResponse = operation.result;
+        } else {
+          apiResponse = operation;
+        }
+        console.log('\n✅ Batch operation complete!\n');
+      }
+    }
   } else {
-    // Use synchronous recognition for small files
-    [response] = await client.recognize(request);
+    // Use inline recognition for small files
+    const apiUrl = `https://speech.googleapis.com/v2/projects/${projectId}/locations/global/recognizers/_:recognize`;
+    const audioBase64 = audioContent!.toString('base64');
+    
+    const requestBody = {
+      config: {
+        autoDecodingConfig: {},
+        languageCodes: ['en-US'],
+        model: 'long',
+        features: {
+          enableAutomaticPunctuation: true,
+        },
+      },
+      content: audioBase64,
+    };
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Speech-to-Text API error: ${response.status} ${response.statusText}\n${errorText}`);
+    }
+
+    apiResponse = await response.json();
+  }
+  
+  // Extract results from response
+  let response_data: any;
+  if (audioUri) {
+    // Batch response structure: response.results[GCS_URI].transcript.results
+    const fileResult = apiResponse?.results?.[audioUri];
+    if (fileResult?.transcript?.results) {
+      response_data = { results: fileResult.transcript.results };
+    } else {
+      // Try alternative path or get first result
+      const firstResult = Object.values(apiResponse?.results || {})[0] as any;
+      if (firstResult?.transcript?.results) {
+        response_data = { results: firstResult.transcript.results };
+      } else if (firstResult?.inlineResult?.transcript?.results) {
+        response_data = { results: firstResult.inlineResult.transcript.results };
+      } else {
+        await fs.writeFile('youtube/J8Eh7RqggsU/debug-api-response.json', JSON.stringify(apiResponse, null, 2));
+        throw new Error('Could not parse batch response. Saved to debug-api-response.json');
+      }
+    }
+  } else {
+    response_data = { results: apiResponse.results || [] };
   }
 
   // Process results - extract segments with result-level timing
@@ -212,16 +326,25 @@ async function transcribeAudio(audioFile: string): Promise<TranscriptResult> {
   let fullTranscript = '';
   let lastEndTime = 0;
 
-  for (const result of response.results || []) {
+  for (const result of response_data.results || []) {
     const alternative = result.alternatives?.[0];
     if (!alternative) continue;
 
     const text = alternative.transcript || '';
     fullTranscript += text + ' ';
 
-    // Extract result-level end time
-    const endSecs = Number(result.resultEndOffset?.seconds || 0) + 
-                   Number(result.resultEndOffset?.nanos || 0) / 1e9;
+    // Extract result-level end time - handle both string format ("9.250s") and object format
+    let endSecs = 0;
+    if (result.resultEndOffset) {
+      if (typeof result.resultEndOffset === 'string') {
+        // Parse string like "9.250s" or "647s"
+        endSecs = parseFloat(result.resultEndOffset.replace('s', ''));
+      } else {
+        // Object format with seconds and nanos
+        endSecs = Number(result.resultEndOffset.seconds || 0) + 
+                 Number(result.resultEndOffset.nanos || 0) / 1e9;
+      }
+    }
     
     segments.push({
       text,

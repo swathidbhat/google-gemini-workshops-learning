@@ -69,15 +69,40 @@ async function downloadVideo(videoInput: string): Promise<DownloadResult> {
     cache: new UniversalCache(true),
   });
 
-  // Get video info
+  // Get video info - catch parsing errors but continue
   console.log('🔍 Fetching video info...');
-  const info = await innertube.getInfo(videoId);
+  let info;
+  try {
+    info = await innertube.getInfo(videoId);
+  } catch (error: any) {
+    // If it's just a parsing error, try to get basic info another way
+    if (error.message?.includes('Parser') || error.message?.includes('CourseProgressView')) {
+      console.log('⚠️  Warning: Parsing error detected, but continuing...');
+      // Try to get stream directly
+      try {
+        const stream = await innertube.download(videoId, {
+          type: 'audio',
+          quality: 'best',
+        });
+        // If we got here, we can proceed with download
+        info = { basic_info: { title: 'Unknown', duration: 0 } } as any;
+      } catch (downloadError: any) {
+        throw new Error(`Failed to access video: ${downloadError.message}`);
+      }
+    } else {
+      throw error;
+    }
+  }
   
-  const title = info.basic_info.title || 'Unknown';
-  const duration = info.basic_info.duration || 0;
+  const title = info.basic_info?.title || 'Unknown';
+  const duration = info.basic_info?.duration || 0;
   
   console.log(`📝 Title: ${title}`);
-  console.log(`⏱️  Duration: ${formatDuration(duration)}\n`);
+  if (duration > 0) {
+    console.log(`⏱️  Duration: ${formatDuration(duration)}\n`);
+  } else {
+    console.log(`⏱️  Duration: Unknown\n`);
+  }
 
   // Create output directory
   const outputDir = path.join('youtube', videoId);
@@ -88,25 +113,43 @@ async function downloadVideo(videoInput: string): Promise<DownloadResult> {
   console.log(`💾 Downloading audio to: ${audioPath}`);
   console.log('⏳ Please wait...\n');
 
-  // Get the best audio format
-  const format = info.chooseFormat({ 
-    type: 'audio',
-    quality: 'best',
-  });
-
-  if (!format) {
-    throw new Error('No audio format available for this video');
+  // Get the best audio format (if available)
+  let format = null;
+  try {
+    format = info.chooseFormat?.({ 
+      type: 'audio',
+      quality: 'best',
+    });
+  } catch (e) {
+    // Ignore format selection errors
   }
 
-  console.log(`🎵 Format: ${format.mime_type}`);
-  console.log(`📊 Bitrate: ${format.bitrate ? Math.round(format.bitrate / 1000) + ' kbps' : 'unknown'}\n`);
+  if (format) {
+    console.log(`🎵 Format: ${format.mime_type}`);
+    console.log(`📊 Bitrate: ${format.bitrate ? Math.round(format.bitrate / 1000) + ' kbps' : 'unknown'}\n`);
+  } else {
+    console.log(`🎵 Format: Will detect automatically\n`);
+  }
 
-  // Download the stream
-  const stream = await innertube.download(videoId, {
-    type: 'audio',
-    quality: 'best',
-    format: 'mp4', // This will be audio-only MP4/M4A
-  });
+  // Download the stream - try different methods
+  let stream;
+  try {
+    stream = await innertube.download(videoId, {
+      type: 'audio',
+      quality: 'best',
+      format: 'mp4', // This will be audio-only MP4/M4A
+    });
+  } catch (error: any) {
+    // Try without format specification
+    try {
+      stream = await innertube.download(videoId, {
+        type: 'audio',
+        quality: 'best',
+      });
+    } catch (error2: any) {
+      throw new Error(`Failed to download stream: ${error2.message || error.message}`);
+    }
+  }
 
   // Write to file with progress tracking
   const fileStream = createWriteStream(audioPath);
