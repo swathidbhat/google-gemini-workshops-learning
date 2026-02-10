@@ -16,7 +16,7 @@ import {
 function buildPrompt(transcript: string, videoDuration: number, videoId: string): string {
   return `You are an expert at analyzing educational programming tutorials and extracting pedagogical concept graphs.
 
-Analyze this educational video transcript and extract 20-30 salient PEDAGOGICAL concepts that are taught in depth.
+Analyze this educational video transcript and extract 10-15 salient PEDAGOGICAL concepts that are taught in depth.
 
 IMPORTANT DISTINCTIONS:
 - ✅ Extract concepts that are TAUGHT DEEPLY (explained, demonstrated, implemented)
