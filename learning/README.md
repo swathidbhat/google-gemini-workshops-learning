@@ -1,10 +1,35 @@
-# Pedagogical Concept Graph: Interactive Learning System
+# Pedagogical Concept Graph (Fork)
 
-An intelligent learning platform that transforms textbooks into interactive, guided learning experiences using concept graphs, Socratic dialogue, and retrieval-augmented generation (RAG).
+> Fork of [google-gemini/workshops](https://github.com/google-gemini/workshops).
+
+## Why this fork exists
+
+This fork applies and modifies the **Pedagogical Concept Graph (PCG)** design principles from the upstream project to transform YouTube videos and other educational video content into interactive chapters using LLMs. 
+
+The core methodology is documented in [NOTES.md](https://github.com/google-gemini/workshops/blob/main/learning/NOTES.md), which describes:
+- Multi-pass concept extraction (structure → pedagogy → exercises)
+- Socratic dialogue systems for active learning
+- RAG-grounded teaching from source material
+- Visual concept graph navigation with prerequisite tracking
+
+This fork experiments with adapting these principles to new video content beyond the original PAIP textbook examples.
+
+## What's different vs upstream
+
+- **Changed**: Concept extraction streamlined to 15 max (was 30) for more focused pedagogical graphs
+- **Added**: Re-processed Karpathy "Let's Build GPT" video with updated extraction parameters
+- **Added**: Enriched concept graphs with learning objectives, mastery indicators, and misconceptions
+- **Added**: Segment-to-concept mappings for video timestamp navigation
+- **Known limitations**: Some processing scripts require manual environment variable setup
+
+**Upstream base:** google-gemini/workshops @ `96b8505`  
+**Compare:** https://github.com/swathidbhat/google-gemini-workshops-learning/compare/google-gemini:main...swathidbhat:main
+
+---
 
 ## Overview
 
-This project demonstrates an AI-powered approach to learning from technical textbooks. Using Peter Norvig's "Paradigms of AI Programming" (PAIP) Chapter 1 as a reference implementation, it creates a structured, interactive learning environment that adapts to each learner's progress.
+An intelligent learning platform that transforms educational videos and textbooks into interactive, guided learning experiences using concept graphs, Socratic dialogue, and retrieval-augmented generation (RAG).
 
 ![Interactive Concept Graph](public/lambda-expressions.png)
 *Visual navigation through prerequisite relationships - hover to preview, click to explore*
@@ -107,33 +132,22 @@ learning/
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   cd learning
-   npm install
-   ```
+```bash
+git clone https://github.com/swathidbhat/google-gemini-workshops-learning.git
+cd google-gemini-workshops-learning/learning
+npm install
+cp .env.example .env.local
+# Add your GOOGLE_API_KEY to .env.local
+npm run dev
+```
 
-2. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local and add your GOOGLE_API_KEY
-   ```
-
-3. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Open in browser**
-   ```
-   http://localhost:3000
-   ```
+Open http://localhost:3000 in your browser.
 
 ## Usage
 
 ### Exploring the Concept Graph
 
-1. **Start at a root concept**: "Interactive REPL" or "Symbols" (highlighted in green)
+1. **Start at a root concept**: For example, "Cross-entropy loss" or "Symbols" (highlighted in green)
 2. **Hover over nodes**: Preview prerequisite chains without clicking
 3. **Click a concept**: View detailed information in the sidebar
 4. **Navigate prerequisites**: Click prerequisite badges to jump to related concepts
@@ -166,50 +180,9 @@ The concept graph is built through three complementary passes:
 2. **Pass 2 (Pedagogy)**: Design learning objectives and mastery indicators
 3. **Pass 3 (Exercises)**: Map textbook exercises to concepts
 
-### Semantic Search Pipeline
-
-```typescript
-// First turn: Perform semantic search
-1. Embed concept name → 3072-dim vector
-2. Compute cosine similarity across 92 chunks
-3. Return top 5 most relevant passages
-4. Cache on client-side
-
-// Subsequent turns: Reuse cache
-→ No additional embedding API calls!
-```
-
-### Structured Mastery Assessment
-
-The LLM returns both dialogue and evaluation in structured JSON:
-```json
-{
-  "message": "Excellent! You understand quote syntax...",
-  "mastery_assessment": {
-    "indicators_demonstrated": ["quote_syntax", "evaluation_blocking"],
-    "confidence": 0.9,
-    "ready_for_mastery": false,
-    "next_focus": "when_to_quote"
-  }
-}
-```
-
-## Development Scripts
-
-```bash
-# Generate semantic chunks from textbook
-npx ts-node scripts/chunk-paip.ts paip-chapter-1.md paip-chapter-1/chunks.json
-
-# Generate vector embeddings
-npx ts-node scripts/embed-chunks.ts paip-chapter-1/chunks.json paip-chapter-1/embeddings.json
-
-# Merge PCG source files (Pass 1 + Pass 2 + Pass 3)
-./merge_pcg.py
-```
-
 ## Design Documentation
 
-See [NOTES.md](NOTES.md) for comprehensive documentation including:
+See upstream [NOTES.md](NOTES.md) for comprehensive documentation including:
 - Multi-pass extraction methodology
 - Graph direction conventions
 - Learning path progression strategies
@@ -220,13 +193,12 @@ See [NOTES.md](NOTES.md) for comprehensive documentation including:
 
 ## Future Enhancements
 
-- [ ] Complete Pass 2 enrichment for all 33 concepts
-- [ ] Spaced repetition for long-term retention
-- [ ] Voice interface with Gemini Live
+- [ ] UI for users to upload their own videos
+- [ ] Export code written during sessions
+- [ ] Export dialog from sessions
 - [ ] Model selector (Flash vs Pro vs Thinking)
-- [ ] Multi-chapter support
-- [ ] Exercise session flow
-- [ ] Analytics and insights
+- [ ] Note-taker
+- [ ] End-of-session personalized summary on confusing concepts
 
 ## Technology Stack
 
@@ -240,8 +212,6 @@ See [NOTES.md](NOTES.md) for comprehensive documentation including:
 
 ## License
 
-Copyright 2025 Google LLC
-
 Licensed under the Apache License, Version 2.0. See LICENSE file for details.
 
 ## Acknowledgments
@@ -252,5 +222,3 @@ Licensed under the Apache License, Version 2.0. See LICENSE file for details.
 - **Google Gemini**: Powering the AI tutor and semantic search
 
 ---
-
-**Built with ❤️ as an exploration of AI-powered learning systems**
