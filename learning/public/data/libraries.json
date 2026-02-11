@@ -38,8 +38,8 @@
       "description": "Build a GPT transformer from scratch with attention mechanism and training loop",
       "color": "purple",
       "stats": {
-        "totalConcepts": 29,
-        "estimatedHours": 2.5
+        "totalConcepts": 14,
+        "estimatedHours": 2
       }
     },
     {
