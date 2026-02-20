@@ -6494,7 +6494,7 @@ const prompt = `Analyze this 3-hour programming tutorial transcript.
 
 ${fullTranscript}
 
-Extract 20-30 salient PEDAGOGICAL concepts taught (not just tools mentioned).
+Extract 10-15 salient PEDAGOGICAL concepts taught (not just tools mentioned).
 
 For each concept, include:
 - Precise pedagogical description
@@ -6558,7 +6558,7 @@ But generally: **trust Gemini**. The transcript contains everything the instruct
 ```
 Layer 1: Concept Graph (from full transcript)
 ├─ Purpose: Learning structure, navigation, prerequisites
-├─ Granularity: 20-30 high-level concepts
+├─ Granularity: 10-15 high-level concepts
 ├─ Output: youtube/kCc8FmEb1nY/concept-graph.json
 └─ Example: "Attention Mechanism", "Transformer Architecture"
 
@@ -6616,7 +6616,7 @@ Layer 2: Frame-Level Segments (from multimodal analysis)
    └─ analyze-frames.ts → video-analysis.json (150 segments)
 
 ⏭️ Stage 4: Concept Graph Extraction (NEXT)
-   └─ extract-concepts.ts → concept-graph.json (20-30 concepts)
+   └─ extract-concepts.ts → concept-graph.json (10-15 concepts)
    
 ⏭️ Stage 5: Embedding Generation
    └─ embed-video-frames.ts → video-embeddings.json (150 embeddings)

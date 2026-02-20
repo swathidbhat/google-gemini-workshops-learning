@@ -1,0 +1,293 @@
+{
+  "metadata": {
+    "title": "A General Audience Introduction to Large Language Models (LLMs)",
+    "author": "Andrej Karpathy",
+    "source": "YouTube",
+    "video_id": "7xTGNNLPyMI",
+    "total_duration": 12684,
+    "total_concepts": 13,
+    "extracted_at": "2024-07-30T12:00:00Z"
+  },
+  "nodes": [
+    {
+      "id": "large_language_model_overview",
+      "name": "Large Language Model (LLM) Overview",
+      "description": "Explains what Large Language Models (LLMs) like ChatGPT are, how they process text input, generate responses, and the fundamental stages involved in their creation, offering mental models for understanding their capabilities and limitations.",
+      "prerequisites": [],
+      "difficulty": "basic",
+      "learning_objectives": [
+        "Understand the high-level concept of LLMs and their purpose.",
+        "Identify the major stages in building an LLM."
+      ],
+      "common_misconceptions": [
+        "LLMs are magical black boxes; they are deterministic mathematical functions."
+      ]
+    },
+    {
+      "id": "pre_training_data_acquisition",
+      "name": "Pre-training: Data Acquisition & Processing",
+      "description": "Details the stages of gathering high-quality, diverse text from publicly available internet sources like Common Crawl, including crucial filtering steps such as URL filtering, raw text extraction from HTML, language filtering, and Personally Identifiable Information (PII) removal.",
+      "prerequisites": ["large_language_model_overview"],
+      "difficulty": "basic",
+      "time_ranges": [
+        {
+          "start": 60,
+          "end": 480
+        }
+      ]
+    },
+    {
+      "id": "tokenization",
+      "name": "Tokenization",
+      "description": "Illustrates how raw text is broken down into a 1-dimensional sequence of discrete numerical units called tokens, using techniques like Byte Pair Encoding (BPE). Explains how a fixed vocabulary size (e.g., 100,000 for GPT-4) balances sequence length and symbol diversity, and why tokens are used over characters or bytes.",
+      "prerequisites": ["pre_training_data_acquisition"],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 480,
+          "end": 1080
+        }
+      ],
+      "code_examples": [
+        "Demonstration using the 'ticktokenizer' website to show text-to-token conversion."
+      ]
+    },
+    {
+      "id": "neural_network_pre_training",
+      "name": "Neural Network Pre-training",
+      "description": "Explains the core process of training a neural network to model the statistical relationships between tokens by predicting the next token in a sequence. Covers the use of token 'windows' (context), initial random predictions, iterative parameter updates based on known correct answers (labels), and the role of the loss function in refining the network's understanding of language patterns.",
+      "prerequisites": ["tokenization"],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 1080,
+          "end": 1740
+        }
+      ],
+      "learning_objectives": [
+        "Understand how LLMs learn to predict the next word in a sequence.",
+        "Grasp the concept of a loss function and its role in training."
+      ]
+    },
+    {
+      "id": "transformer_architecture",
+      "name": "Transformer Architecture",
+      "description": "Introduces the Transformer as the specific neural network architecture foundational to modern LLMs. Explains its role as a mathematical function transforming token inputs to outputs, highlighting key components like token embeddings, attention blocks (e.g., multi-head attention), and Multi-Layer Perceptrons (MLPs), and conceptualizing network parameters as adjustable 'knobs'.",
+      "prerequisites": ["neural_network_pre_training"],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 1740,
+          "end": 2040
+        }
+      ]
+    },
+    {
+      "id": "inference_and_text_generation",
+      "name": "Inference and Text Generation",
+      "description": "Describes the process of generating new text from a trained LLM. This involves starting with a prefix of tokens and iteratively sampling subsequent tokens based on the model's learned probability distribution, resulting in stochastic (random yet coherent) text sequences that statistically resemble the training data.",
+      "prerequisites": ["neural_network_pre_training", "transformer_architecture"],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 2040,
+          "end": 2400
+        }
+      ]
+    },
+    {
+      "id": "base_models_and_prompting",
+      "name": "Base Models and Prompting",
+      "description": "Explains the nature of an initial 'base model' as primarily a text completion engine (an internet document simulator) rather than a direct assistant. Demonstrates how careful prompt engineering, including few-shot prompting and structuring conversations, can elicit knowledge, continue patterns, or simulate a conversational persona through the model's in-context learning abilities.",
+      "prerequisites": ["inference_and_text_generation"],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 3000,
+          "end": 4740
+        }
+      ],
+      "learning_objectives": [
+        "Distinguish between base models and assistant models.",
+        "Understand how in-context learning works with few-shot prompts."
+      ],
+      "common_misconceptions": [
+        "A base model is an assistant; it is actually a token autocomplete/internet document simulator."
+      ]
+    },
+    {
+      "id": "supervised_fine_tuning_sft",
+      "name": "Supervised Fine-tuning (SFT)",
+      "description": "The post-training stage where a base model is further trained on manually curated conversational datasets to transform it into a helpful and aligned assistant. This process involves human labelers creating ideal responses following detailed guidelines (e.g., helpful, truthful, harmless), and utilizing special tokens for conversation structure (e.g., IM_start, user, assistant).",
+      "prerequisites": ["base_models_and_prompting"],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 4740,
+          "end": 6300
+        }
+      ]
+    },
+    {
+      "id": "hallucinations_and_mitigation",
+      "name": "Hallucinations and Mitigation",
+      "description": "Addresses the phenomenon of LLMs generating false or nonsensical information. Explores reasons behind hallucinations (statistical imitation of confident tones) and introduces mitigation strategies like training the model to explicitly state 'I don't know' when uncertain (refusal) and enabling tool use (e.g., web search, code interpreter) to provide external working memory and factual retrieval.",
+      "prerequisites": ["supervised_fine_tuning_sft"],
+      "difficulty": "intermediate",
+      "time_ranges": [
+        {
+          "start": 6300,
+          "end": 8100
+        }
+      ],
+      "common_misconceptions": [
+        "LLMs 'lie' or 'know' they are wrong; they are statistically generating the most probable sequence, even if factually incorrect.",
+        "LLMs have internal memory for all facts; most knowledge is vague recollection, not explicit storage."
+      ]
+    },
+    {
+      "id": "llm_computational_limits_and_reasoning",
+      "name": "LLM Computational Limits and Reasoning",
+      "description": "Examines the implications of an LLM's finite and limited computational capacity per token for complex reasoning tasks. Explains why models struggle with direct, single-token answers for math, counting, or spelling, and emphasizes the importance of distributing reasoning across multiple tokens (Chain-of-Thought) and leveraging external tools for precise computations.",
+      "prerequisites": ["hallucinations_and_mitigation"],
+      "difficulty": "advanced",
+      "time_ranges": [
+        {
+          "start": 8100,
+          "end": 9600
+        }
+      ],
+      "learning_objectives": [
+        "Understand the 'models need tokens to think' principle.",
+        "Recognize why LLMs struggle with direct arithmetic or character-level tasks."
+      ],
+      "common_misconceptions": [
+        "LLMs can perform arbitrary computation in a single step; computation is distributed across tokens.",
+        "LLMs see characters directly; they operate on tokens, which are sub-word chunks."
+      ]
+    },
+    {
+      "id": "reinforcement_learning_for_llms",
+      "name": "Reinforcement Learning (RL) for LLMs",
+      "description": "Introduces RL as an advanced post-training stage where models learn to discover optimal problem-solving strategies through trial and error, akin to practice problems. In verifiable domains (e.g., math, code), models generate multiple solutions, are scored against correct answers, and reinforce successful token sequences, leading to the emergence of 'chains of thought' and sophisticated cognitive strategies that can surpass expert human performance.",
+      "prerequisites": ["supervised_fine_tuning_sft", "llm_computational_limits_and_reasoning"],
+      "difficulty": "advanced",
+      "time_ranges": [
+        {
+          "start": 9600,
+          "end": 11000
+        }
+      ]
+    },
+    {
+      "id": "reinforcement_learning_from_human_feedback_rlhf",
+      "name": "Reinforcement Learning from Human Feedback (RLHF)",
+      "description": "Explains RLHF as a technique for applying reinforcement learning in 'unverifiable' domains (e.g., creative writing) where objective answers are absent. It involves training a separate 'reward model' based on human rankings of generated outputs. This reward model then simulates human preferences, allowing the LLM to be optimized against these simulated judgments, though it carries risks like the LLM 'gaming' the reward model through adversarial examples.",
+      "prerequisites": ["reinforcement_learning_for_llms"],
+      "difficulty": "advanced",
+      "time_ranges": [
+        {
+          "start": 11000,
+          "end": 12000
+        }
+      ],
+      "common_misconceptions": [
+        "RLHF can run indefinitely to perfect models; reward models are gameable, limiting the training duration and effectiveness."
+      ]
+    },
+    {
+      "id": "future_directions_and_multimodality",
+      "name": "Future Directions and Multimodality",
+      "description": "Discusses emerging capabilities and ongoing research in LLMs, including the integration of multimodal data (audio, images, and text handled natively by tokenizing non-textual information), the development of long-running 'agents' capable of stringing together tasks, and future research areas like 'test-time training' to overcome context window limitations.",
+      "prerequisites": ["reinforcement_learning_for_llms", "reinforcement_learning_from_human_feedback_rlhf"],
+      "difficulty": "advanced",
+      "time_ranges": [
+        {
+          "start": 12000,
+          "end": 12684
+        }
+      ],
+      "learning_objectives": [
+        "Identify key upcoming advancements in LLM technology.",
+        "Understand how multimodal input can be integrated into current LLM architectures."
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "large_language_model_overview",
+      "to": "pre_training_data_acquisition",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "pre_training_data_acquisition",
+      "to": "tokenization",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "tokenization",
+      "to": "neural_network_pre_training",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "neural_network_pre_training",
+      "to": "transformer_architecture",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "neural_network_pre_training",
+      "to": "inference_and_text_generation",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "transformer_architecture",
+      "to": "inference_and_text_generation",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "inference_and_text_generation",
+      "to": "base_models_and_prompting",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "base_models_and_prompting",
+      "to": "supervised_fine_tuning_sft",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "supervised_fine_tuning_sft",
+      "to": "hallucinations_and_mitigation",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "hallucinations_and_mitigation",
+      "to": "llm_computational_limits_and_reasoning",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "supervised_fine_tuning_sft",
+      "to": "reinforcement_learning_for_llms",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "llm_computational_limits_and_reasoning",
+      "to": "reinforcement_learning_for_llms",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "reinforcement_learning_for_llms",
+      "to": "reinforcement_learning_from_human_feedback_rlhf",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "reinforcement_learning_for_llms",
+      "to": "future_directions_and_multimodality",
+      "type": "prerequisite_for"
+    },
+    {
+      "from": "reinforcement_learning_from_human_feedback_rlhf",
+      "to": "future_directions_and_multimodality",
+      "type": "prerequisite_for"
+    }
+  ]
+}

@@ -294,8 +294,22 @@ async function mapSegmentsToConcepts(videoId: string): Promise<void> {
   // 4. Map segments in batches
   const BATCH_SIZE = 100; // Map 100 segments per API call
   console.log(`🔄 Mapping segments to concepts in batches of ${BATCH_SIZE}...`);
-  
-  const mappedSegments: MappedSegment[] = [];
+
+  const checkpointPath = path.join(
+    process.cwd(),
+    `youtube/${videoId}/segment-concept-mappings.checkpoint.json`
+  );
+
+  // Load checkpoint if one exists from a previous interrupted run
+  let mappedSegments: MappedSegment[] = [];
+  let startBatchIdx = 0;
+  if (fs.existsSync(checkpointPath)) {
+    const checkpoint = JSON.parse(fs.readFileSync(checkpointPath, 'utf-8'));
+    mappedSegments = checkpoint.segments;
+    startBatchIdx = Math.floor(mappedSegments.length / BATCH_SIZE);
+    console.log(`   ♻️  Resuming from checkpoint: ${mappedSegments.length} segments already done (batch ${startBatchIdx + 1})\n`);
+  }
+
   const batches: VideoSegment[][] = [];
   
   // Create batches
@@ -305,7 +319,7 @@ async function mapSegmentsToConcepts(videoId: string): Promise<void> {
   
   console.log(`   Total batches: ${batches.length}\n`);
   
-  for (let batchIdx = 0; batchIdx < batches.length; batchIdx++) {
+  for (let batchIdx = startBatchIdx; batchIdx < batches.length; batchIdx++) {
     const batch = batches[batchIdx];
     const batchStart = batchIdx * BATCH_SIZE;
     
@@ -330,6 +344,10 @@ async function mapSegmentsToConcepts(videoId: string): Promise<void> {
         concept_mapping: mapping
       });
     }
+
+    // Save checkpoint after each batch
+    fs.writeFileSync(checkpointPath, JSON.stringify({ segments: mappedSegments }, null, 2));
+    console.log(`   💾 Checkpoint saved (${mappedSegments.length}/${segments.length} segments)`);
     
     // Small delay between batches to avoid rate limiting
     if (batchIdx < batches.length - 1) {
@@ -360,6 +378,11 @@ async function mapSegmentsToConcepts(videoId: string): Promise<void> {
   };
   
   fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+
+  // Clean up checkpoint now that the final file is saved
+  if (fs.existsSync(checkpointPath)) {
+    fs.unlinkSync(checkpointPath);
+  }
   
   console.log(`\n✅ Saved mappings to: youtube/${videoId}/segment-concept-mappings.json`);
   console.log('\n🎉 Segment-to-concept mapping complete!');

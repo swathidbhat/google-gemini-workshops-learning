@@ -32,6 +32,7 @@ type Library = {
   embeddingsPath: string;
   description: string;
   color: string;
+  hidden?: boolean;
   stats: {
     totalConcepts: number;
     estimatedHours: number;
@@ -65,15 +66,16 @@ function HomeContent() {
     fetch('/data/libraries.json')
       .then(res => res.json())
       .then(data => {
-        setLibraries(data.libraries);
+        const visibleLibraries = data.libraries.filter((l: Library) => !l.hidden);
+        setLibraries(visibleLibraries);
         
         // Priority: URL param > localStorage > show selector
         const urlLibrary = searchParams.get('library');
-        if (urlLibrary && data.libraries.find((l: Library) => l.id === urlLibrary)) {
+        if (urlLibrary && visibleLibraries.find((l: Library) => l.id === urlLibrary)) {
           setSelectedLibraryId(urlLibrary);
         } else {
           const saved = localStorage.getItem('selectedLibrary');
-          if (saved && data.libraries.find((l: Library) => l.id === saved)) {
+          if (saved && visibleLibraries.find((l: Library) => l.id === saved)) {
             setSelectedLibraryId(saved);
           }
           // No fallback - show library selector if nothing is set

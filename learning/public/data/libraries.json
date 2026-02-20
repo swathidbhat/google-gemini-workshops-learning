@@ -51,23 +51,24 @@
       "embeddingsPath": "data/cs221-stanford/cs221-embeddings.json",
       "description": "Introduction to AI course covering expert systems, machine learning foundations, and modern AI approaches",
       "color": "orange",
+      "hidden": true,
       "stats": {
         "totalConcepts": 29,
         "estimatedHours": 1.5
       }
     },
     {
-      "id": "sutskever-agi",
-      "title": "Ilya Sutskever: Thoughts on AGI, Superintelligence, and the Future of AI",
-      "author": "Ilya Sutskever",
+      "id": "karpathy-llm-deepdive",
+      "title": "Deep Dive into LLMs like ChatGPT",
+      "author": "Andrej Karpathy",
       "type": "video",
-      "conceptGraphPath": "data/youtube-ar20fwccjas/concept-graph.json",
-      "embeddingsPath": "data/youtube-ar20fwccjas/embeddings.json",
-      "description": "Deep dive into AGI, superintelligence, AI safety, alignment, and the future trajectory of artificial intelligence",
-      "color": "red",
+      "conceptGraphPath": "data/youtube-7xTGNNLPyMI/concept-graph.json",
+      "embeddingsPath": "data/youtube-7xTGNNLPyMI/embeddings.json",
+      "description": "A deep dive into how large language models like ChatGPT work, from training data and tokenization to RLHF and inference",
+      "color": "purple",
       "stats": {
-        "totalConcepts": 30,
-        "estimatedHours": 1.6
+        "totalConcepts": 13,
+        "estimatedHours": 3.5
       }
     }
   ]

@@ -50,7 +50,7 @@ Return a complete concept graph with metadata including:
 - total_concepts: (number of concepts extracted)
 - extracted_at: (timestamp will be added automatically)
 
-And 20-30 pedagogical concepts as nodes.`;
+And 10-15 pedagogical concepts as nodes.`;
 }
 
 // ============================================================================
