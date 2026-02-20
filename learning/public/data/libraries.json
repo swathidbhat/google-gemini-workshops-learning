@@ -9,6 +9,7 @@
       "embeddingsPath": "data/paip-ch1/paip-embeddings.json",
       "description": "Learn Lisp programming fundamentals through Paradigms of AI Programming",
       "color": "blue",
+      "hidden": true,
       "stats": {
         "totalConcepts": 42,
         "estimatedHours": 8

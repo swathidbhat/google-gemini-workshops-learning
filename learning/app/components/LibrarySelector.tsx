@@ -53,9 +53,6 @@ export default function LibrarySelector({ libraries, onSelect }: LibrarySelector
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
               Little PAIPer
             </h1>
-            <p className="text-xl text-slate-600">
-              Learn computer science through Peter Norvig's teachings
-            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
